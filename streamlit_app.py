@@ -81,14 +81,14 @@ def main():
         user_input(user_question, api_key)
 
     with st.sidebar:
-        st.title("Menu:")
-        pdf_docs = st.file_uploader("Upload your PDF Files and Click on the Submit & Process Button", accept_multiple_files=True, key="pdf_uploader")
+        st.title("Uploader:")
+        pdf_docs = st.file_uploader("Upload PDF Files and Click on the Submit & Process Button", accept_multiple_files=True, key="pdf_uploader")
         if st.button("Submit & Process", key="process_button"):
             with st.spinner("Processing..."):
                 raw_text = get_pdf_text(pdf_docs)
                 text_chunks = get_text_chunks(raw_text)
                 get_vector_store(text_chunks, api_key)
-                st.success("Done")
+                st.success("Done!!")
 
 if __name__ == "__main__":
     main()
