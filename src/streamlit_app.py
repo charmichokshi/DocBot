@@ -1,7 +1,7 @@
 import streamlit as st
 from utils.load_config import LoadConfig
 from utils.app_utils import get_text_chunks, get_vector_store, user_input
-from utils.pdf_utils import get_pdf_text
+from utils.pdf_utils import get_pdf_text, get_pdf_names, delete_faiss_files
 
 
 APPCFG = LoadConfig()
@@ -11,6 +11,7 @@ st.set_page_config(page_title="DocBot", layout="wide")
 
 
 def main():
+    # delete_faiss_files('./faiss_index/')
     st.markdown("""
     ## DocBot ⛵: Chat with PDFs and get instant insights!
 
@@ -41,7 +42,8 @@ def main():
         if st.button("Submit & Process", key="process_button"):
             with st.spinner("Processing..."):
                 raw_text = get_pdf_text(pdf_docs)
-                text_chunks = get_text_chunks(APPCFG, raw_text)
+                pdf_names = get_pdf_names(pdf_docs)
+                text_chunks = get_text_chunks(APPCFG, raw_text+pdf_names)
                 get_vector_store(APPCFG, text_chunks, cohere_api_key)
                 st.success("Done!!")
 
