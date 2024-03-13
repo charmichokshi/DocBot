@@ -1,7 +1,5 @@
 import yaml
 from pyprojroot import here
-from dotenv import load_dotenv
-import os
 
 class LoadConfig:
     """
@@ -28,7 +26,3 @@ class LoadConfig:
         self.chunk_size = app_config["chunk_size"]
         self.chunk_overlap = app_config["chunk_overlap"]
         self.llm_system_role = app_config["llm_system_role"]
-
-    def load_cohere_credentials(self) -> None:
-        load_dotenv()
-        self.cohere_api_key = os.getenv("COHERE_API_KEY")
