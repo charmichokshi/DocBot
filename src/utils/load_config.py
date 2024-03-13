@@ -26,3 +26,4 @@ class LoadConfig:
         self.chunk_size = app_config["chunk_size"]
         self.chunk_overlap = app_config["chunk_overlap"]
         self.llm_system_role = app_config["llm_system_role"]
+        self.llm_format_output = app_config["llm_format_output"]

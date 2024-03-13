@@ -28,7 +28,6 @@ def main():
 
     st.header("Start Chatting 💬")
 
-    # user_question = st.chat_input("Ask a Question from the PDF Files", key="user_question")
     user_question = st.text_input("Ask a Question from the PDF Files", key="user_question")
 
     if user_question:
@@ -37,7 +36,8 @@ def main():
 
     with st.sidebar:
         st.title("Uploader:")
-        pdf_docs = st.file_uploader("Upload PDF Files and Click on the Submit & Process Button", accept_multiple_files=True, key="pdf_uploader")
+        pdf_docs = st.file_uploader("Upload PDF Files and Click on the Submit & Process Button",
+                                    accept_multiple_files=True, key="pdf_uploader")
         if st.button("Submit & Process", key="process_button"):
             with st.spinner("Processing..."):
                 raw_text = get_pdf_text(pdf_docs)

@@ -7,3 +7,10 @@ def get_pdf_text(pdf_docs):
         for page in pdf_reader.pages:
             text += page.extract_text()
     return text
+
+
+def get_pdf_names(pdf_docs):
+    pdf_names = ""
+    for pdf in pdf_docs:
+        pdf_names += pdf.name + " "
+    return pdf_names

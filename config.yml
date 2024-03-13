@@ -12,3 +12,12 @@ llm_system_role:
 
     Answer:
     "
+llm_format_output:
+  "
+  After giving your final answer, you will mention the real name of the file from where you have 
+  taken reference to provide this answer. The files are the once uploaded by the user. If there 
+  are more than 1 PDF files you have taken context from then mention the name of all of them. 
+  Format should be as follows,\
+  
+  Reference Present in File(s): mention comma separated actual file name(s) here that have been uploaded by the user 
+  "

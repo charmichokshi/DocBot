@@ -4,7 +4,7 @@ from langchain.chains.question_answering import load_qa_chain
 from langchain.prompts import PromptTemplate
 from langchain.embeddings import CohereEmbeddings
 from langchain.chat_models import ChatCohere
-
+from .pdf_utils import get_pdf_names
 
 def get_text_chunks(_config, text):
     text_splitter = RecursiveCharacterTextSplitter(chunk_size=_config.chunk_size,
@@ -32,6 +32,8 @@ def user_input(_config, user_question, api_key):
     new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
     docs = new_db.similarity_search(user_question)
     chain = RAG(_config, api_key)
-    response = chain({"input_documents": docs, "question": user_question}, return_only_outputs=True)
+    response = chain({"input_documents": docs,
+                      "question": user_question},
+                     return_only_outputs=True)
     return response["output_text"]
 
