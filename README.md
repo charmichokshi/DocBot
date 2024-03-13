@@ -3,8 +3,6 @@ LLMs suffer from issues such as Knowledge cut-offs and hallucinations. They are 
 
 Retrieval-Augmented Generation (RAG) framework can solve these issues. This chatbot is built leveraging the free Cohere Model and Embeddings APIs. It processes uploaded PDF documents by breaking them down into manageable chunks, creates a searchable vector store, and generates accurate answers to user queries. This advanced approach ensures high-quality, contextually relevant responses for an efficient and effective user experience. (It will not hallucinate an answer if it's missing context.)
 
-## Sounds interesting? [Try it on your own](https://docbot-by-charmi.streamlit.app/)!!
-
 Below is a screenshot of how the App works.
 ![Streamlit App](https://github.com/charmichokshi/DocBot/blob/main/images/DocBot_SS.png)
 
