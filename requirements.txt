@@ -4,3 +4,4 @@ PyPDF2
 faiss-cpu
 cohere
 python-dotenv
+pyprojroot
