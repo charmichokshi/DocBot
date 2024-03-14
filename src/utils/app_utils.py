@@ -33,8 +33,6 @@ def user_input(_config, user_question, api_key):
     docs = new_db.similarity_search(user_question)
     chain = RAG(_config, api_key)
     response = chain({"input_documents": docs,
-                      "question": user_question},
+                      "question": user_question+_config.llm_format_output},
                      return_only_outputs=True)
-    # "question": user_question+_config.llm_format_output},
     return response["output_text"]
-
