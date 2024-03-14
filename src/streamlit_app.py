@@ -1,7 +1,8 @@
 import streamlit as st
 from utils.load_config import LoadConfig
-from utils.app_utils import get_text_chunks, get_vector_store, user_input
-from utils.pdf_utils import get_pdf_text, delete_faiss_files
+from utils.app_utils import get_text_chunks, get_vector_store, process_user_input, get_cached_vector_store, \
+    get_doc_chunks
+from utils.pdf_utils import get_pdf_text, delete_faiss_files, get_pdf_objects
 import time
 
 
@@ -34,7 +35,7 @@ def main():
 
     if user_question:
         start_time = time.time()
-        response = user_input(APPCFG, user_question, cohere_api_key)
+        response = process_user_input(APPCFG, user_question, cohere_api_key)
         end_time = time.time()
         st.write("DocBot ⛵: ", response)
 
@@ -47,9 +48,16 @@ def main():
                                     accept_multiple_files=True, key="pdf_uploader")
         if st.button("Submit & Process", key="process_button"):
             with st.spinner("Processing..."):
-                raw_text = get_pdf_text(pdf_docs)
-                text_chunks = get_text_chunks(APPCFG, raw_text)
-                get_vector_store(APPCFG, text_chunks, cohere_api_key)
+                # normal
+                # raw_text = get_pdf_text(pdf_docs)
+                # text_chunks = get_text_chunks(APPCFG, raw_text)
+                # get_vector_store(APPCFG, text_chunks, cohere_api_key)
+                # st.success("Done!!")
+
+                # cache
+                raw_docs = get_pdf_objects(pdf_docs)
+                docs_chunks = get_doc_chunks(APPCFG, raw_docs)
+                get_cached_vector_store(APPCFG, docs_chunks, cohere_api_key)
                 st.success("Done!!")
 
 
