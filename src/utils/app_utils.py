@@ -23,18 +23,18 @@ def RAG(_config, api_key):
     prompt_template = _config.llm_system_role
     model = ChatCohere(cohere_api_key=api_key)
     prompt = PromptTemplate(template=prompt_template, input_variables=["context", "question"])
-    chain = load_qa_chain(model, chain_type="stuff", prompt=prompt)
+    chain = load_qa_chain(model,
+                          chain_type="stuff",
+                          prompt=prompt)
     return chain
 
 
-def user_input(_config, user_question, api_key):
+def process_user_input(_config, user_question, api_key):
     embeddings = CohereEmbeddings(cohere_api_key=api_key, model=_config.cohere_embedding_model)
     new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
     docs = new_db.similarity_search(user_question)
     chain = RAG(_config, api_key)
     response = chain({"input_documents": docs,
-                      "question": user_question},
+                      "question": user_question+_config.llm_format_output},
                      return_only_outputs=True)
-    # "question": user_question+_config.llm_format_output},
     return response["output_text"]
-
