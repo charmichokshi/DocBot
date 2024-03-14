@@ -2,6 +2,7 @@ import streamlit as st
 from utils.load_config import LoadConfig
 from utils.app_utils import get_text_chunks, get_vector_store, user_input
 from utils.pdf_utils import get_pdf_text, delete_faiss_files
+import time
 
 
 APPCFG = LoadConfig()
@@ -32,8 +33,13 @@ def main():
     user_question = st.text_input("Ask a Question from the PDF Files", key="user_question")
 
     if user_question:
+        start_time = time.time()
         response = user_input(APPCFG, user_question, cohere_api_key)
+        end_time = time.time()
         st.write("DocBot ⛵: ", response)
+
+        execution_time = end_time - start_time
+        st.write("Execution time:", round(execution_time, 2), "seconds")
 
     with st.sidebar:
         st.title("Uploader:")
