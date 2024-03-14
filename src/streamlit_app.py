@@ -3,6 +3,7 @@ from utils.load_config import LoadConfig
 from utils.app_utils import get_text_chunks, get_vector_store, process_user_input
 from utils.hybrid_app_utils import get_cached_vector_store, process_user_input_cache_hybrid
 from utils.pdf_utils import get_pdf_text, delete_faiss_files
+import time
 
 
 APPCFG = LoadConfig()
@@ -34,8 +35,13 @@ def main():
 
     if user_question:
         # response = process_user_input(APPCFG, user_question, cohere_api_key)
+        start_time = time.time()
         response = process_user_input_cache_hybrid(APPCFG, user_question, cohere_api_key)
+        end_time = time.time()
         st.write("DocBot ⛵: ", response)
+
+        execution_time = end_time - start_time
+        st.write("Execution time:", round(execution_time, 2), "seconds")
 
     with st.sidebar:
         st.title("Uploader:")
