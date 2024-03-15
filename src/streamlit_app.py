@@ -1,7 +1,7 @@
 import streamlit as st
 from utils.load_config import LoadConfig
 from utils.app_utils import get_text_chunks, get_vector_store, process_user_input, get_cached_vector_store, \
-    get_doc_chunks
+    get_doc_chunks, get_chroma_vector_store
 from utils.pdf_utils import get_pdf_text, delete_faiss_files, get_pdf_objects
 import time
 
@@ -48,17 +48,27 @@ def main():
                                     accept_multiple_files=True, key="pdf_uploader")
         if st.button("Submit & Process", key="process_button"):
             with st.spinner("Processing..."):
-                # normal
-                # raw_text = get_pdf_text(pdf_docs)
-                # text_chunks = get_text_chunks(APPCFG, raw_text)
-                # get_vector_store(APPCFG, text_chunks, cohere_api_key)
-                # st.success("Done!!")
-
-                # cache
-                raw_docs = get_pdf_objects(pdf_docs)
-                docs_chunks = get_doc_chunks(APPCFG, raw_docs)
-                get_cached_vector_store(APPCFG, docs_chunks, cohere_api_key)
-                st.success("Done!!")
+                # FAISS CACHE
+                if APPCFG.storage == "FAISS" and APPCFG.cache:
+                    raw_docs = get_pdf_objects(pdf_docs)
+                    docs_chunks = get_doc_chunks(APPCFG, raw_docs)
+                    get_cached_vector_store(APPCFG, docs_chunks, cohere_api_key)
+                    st.success("Done!!")
+                    st.write('Using FAISS with Cache')
+                # FAISS W/O CACHE
+                elif APPCFG.storage == "FAISS" and not APPCFG.cache:
+                    raw_text = get_pdf_text(pdf_docs)
+                    text_chunks = get_text_chunks(APPCFG, raw_text)
+                    get_vector_store(APPCFG, text_chunks, cohere_api_key)
+                    st.success("Done!!")
+                    st.write('Using FAISS without Cache')
+                # CHROMA W/O CACHE
+                elif APPCFG.storage == "CHROMA" and not APPCFG.cache:
+                    raw_text = get_pdf_text(pdf_docs)
+                    text_chunks = get_text_chunks(APPCFG, raw_text)
+                    get_chroma_vector_store(APPCFG, text_chunks, cohere_api_key)
+                    st.success("Done!!")
+                    st.write('Using Chroma DB')
 
 
 if __name__ == "__main__":

@@ -5,8 +5,12 @@ from langchain.prompts import PromptTemplate
 from langchain.embeddings import CohereEmbeddings, CacheBackedEmbeddings
 from langchain.chat_models import ChatCohere
 from langchain.cache import InMemoryCache
+from langchain.vectorstores.chroma import Chroma
+
 from typing import Dict, List, Optional, Tuple
 
+
+chroma_vector_store = None
 
 class InMemoryCache:
     def __init__(self):
@@ -62,6 +66,13 @@ def get_vector_store(_config, text_chunks, api_key):
     vector_store.save_local("faiss_index")
 
 
+def get_chroma_vector_store(_config, text_chunks, api_key):
+    global chroma_vector_store
+    embeddings = CohereEmbeddings(cohere_api_key=api_key, model=_config.cohere_embedding_model)
+    vector_store = Chroma.from_texts(text_chunks, embeddings)
+    chroma_vector_store = vector_store
+
+
 def RAG(_config, api_key):
     prompt_template = _config.llm_system_role
     model = ChatCohere(cohere_api_key=api_key)
@@ -73,9 +84,16 @@ def RAG(_config, api_key):
 
 
 def process_user_input(_config, user_question, api_key):
-    embeddings = CohereEmbeddings(cohere_api_key=api_key, model=_config.cohere_embedding_model)
-    new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
-    docs = new_db.similarity_search(user_question)
+    if _config.storage == "FAISS":
+        embeddings = CohereEmbeddings(cohere_api_key=api_key, model=_config.cohere_embedding_model)
+        new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
+        docs = new_db.similarity_search(user_question)
+    elif _config.storage == "CHROMA":
+        global chroma_vector_store
+        docs = chroma_vector_store.similarity_search(user_question)
+    else:
+        return ""
+
     chain = RAG(_config, api_key)
     response = chain({"input_documents": docs,
                       "question": user_question},

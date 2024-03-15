@@ -9,6 +9,7 @@ __pycache__/
 # Distribution / packaging
 .Python
 .streamlit/
+chroma/
 faiss_index/
 cache/
 build/

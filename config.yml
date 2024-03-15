@@ -20,3 +20,5 @@ llm_format_output:
   
   Reference Present in File(s): mention comma and space separated file name(s) 
   "
+storage: CHROMA
+cache: False
