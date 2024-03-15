@@ -6,11 +6,16 @@ from langchain.embeddings import CohereEmbeddings, CacheBackedEmbeddings
 from langchain.chat_models import ChatCohere
 from langchain.cache import InMemoryCache
 from langchain.vectorstores.chroma import Chroma
-
 from typing import Dict, List, Optional, Tuple
 
 
+__import__('pysqlite3')
+import sys
+sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+
+
 chroma_vector_store = None
+
 
 class InMemoryCache:
     def __init__(self):
