@@ -5,3 +5,4 @@ faiss-cpu
 cohere
 python-dotenv
 pyprojroot
+chromadb
