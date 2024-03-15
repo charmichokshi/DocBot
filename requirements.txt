@@ -6,3 +6,4 @@ cohere
 python-dotenv
 pyprojroot
 chromadb
+pysqlite3-binary
