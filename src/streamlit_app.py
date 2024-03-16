@@ -14,61 +14,86 @@ st.set_page_config(page_title="DocBot", layout="wide")
 
 def main():
     # delete_faiss_files('./faiss_index/')
-    st.markdown("""
-    ## DocBot ⛵: Chat with PDFs and get instant insights!
+    st.markdown("""## DocBot ⛵: Chat with PDFs and get instant insights!""")
 
-    This chatbot is built using the Retrieval-Augmented Generation (RAG) framework, leveraging Cohere Model and Embeddings.
-    It processes uploaded PDF documents by breaking them down into manageable chunks, creates a searchable vector store, and generates accurate answers to user queries. 
-    This advanced approach ensures high-quality, contextually relevant responses for an efficient and effective user experience. 
-    (It will not hallucinate an answer if its missing context.)""")
+    with st.expander("About"):
+        st.markdown("""
+        This chatbot is built using the Retrieval-Augmented Generation (RAG) framework, leveraging Cohere Model and Embeddings.
+        It processes uploaded PDF documents by breaking them down into manageable chunks, creates a searchable vector store, and generates accurate answers to user queries. 
+        This advanced approach ensures high-quality, contextually relevant responses for an efficient and effective user experience. 
+        (It will not hallucinate an answer if its missing context.)
+        """)
 
-    st.markdown("""
-    ##### How It Works
-    1. **Upload Your Documents**: You can upload multiple PDF files at once. Press Submit & Process.
-    2. **Ask a Question**: After processing the documents, ask any question related to the content of your uploaded documents for a precise answer.
-    """)
-    st.divider()
+    # How It Works section
+    with st.expander("How It Works"):
+        st.markdown("""
+        1. **Upload Your Documents**: You can upload multiple PDF files at once. Press Submit & Process.
+        2. **Ask a Question**: After processing the documents, ask any question related to the content of your uploaded documents for a precise answer.
+        """)
+    # st.divider()
 
-    st.header("Start Chatting 💬")
 
-    user_question = st.text_input("Ask a Question from the PDF Files", key="user_question")
-
-    if user_question:
-        start_time = time.time()
-        response = process_user_input(APPCFG, user_question, cohere_api_key)
-        end_time = time.time()
-        st.write("DocBot ⛵: ", response)
-
-        execution_time = end_time - start_time
-        st.write("Execution time:", round(execution_time, 2), "seconds")
 
     with st.sidebar:
         st.title("Uploader:")
-        pdf_docs = st.file_uploader("Upload PDF Files and Click on the Submit & Process Button",
+        pdf_docs = st.file_uploader("Upload PDF Files, Configure options and Click on the Submit & Process Button",
                                     accept_multiple_files=True, key="pdf_uploader")
+        storage_type = st.radio("Select Storage Type", ["Chroma", "FAISS"], index=0)
+        if storage_type == "FAISS":
+            use_cache = st.checkbox("Cache Embeddings with FAISS", value=False)
+        else:
+            use_cache = False
+
         if st.button("Submit & Process", key="process_button"):
             with st.spinner("Processing..."):
                 # FAISS CACHE
-                if APPCFG.storage == "FAISS" and APPCFG.cache:
+                if storage_type == "FAISS" and use_cache:
                     raw_docs = get_pdf_objects(pdf_docs)
                     docs_chunks = get_doc_chunks(APPCFG, raw_docs)
                     get_cached_vector_store(APPCFG, docs_chunks, cohere_api_key)
                     st.success("Done!!")
-                    st.write('Using FAISS with Cache')
+                    # st.write('Using FAISS with Cache...')
                 # FAISS W/O CACHE
-                elif APPCFG.storage == "FAISS" and not APPCFG.cache:
+                elif storage_type == "FAISS":
                     raw_text = get_pdf_text(pdf_docs)
                     text_chunks = get_text_chunks(APPCFG, raw_text)
                     get_vector_store(APPCFG, text_chunks, cohere_api_key)
                     st.success("Done!!")
-                    st.write('Using FAISS without Cache')
+                    # st.write('Using FAISS without Cache...')
                 # CHROMA W/O CACHE
-                elif APPCFG.storage == "CHROMA" and not APPCFG.cache:
+                elif storage_type == "Chroma":
                     raw_text = get_pdf_text(pdf_docs)
                     text_chunks = get_text_chunks(APPCFG, raw_text)
                     get_chroma_vector_store(APPCFG, text_chunks, cohere_api_key)
                     st.success("Done!!")
-                    st.write('Using Chroma DB')
+                    # st.write('Using Chroma DB...')
+
+    st.markdown(
+        """
+        <style>
+        .stTextInput > div:last-child {
+            display: none !important;
+        }
+        </style>
+        """,
+        unsafe_allow_html=True
+    )
+    # with st.form("formid"):
+    user_question = st.text_input(r"$\textsf{\Large Start Chatting 💬}$",
+                                  placeholder="Type your question here and hit Ask")
+    submitted = st.button("Ask ➤")
+
+    if st.session_state.get("submitted") or submitted:
+        if user_question:
+            start_time = time.time()
+            response = process_user_input(APPCFG, user_question, cohere_api_key, storage_type)
+            end_time = time.time()
+            st.write("DocBot ⛵: ", response)
+            execution_time = end_time - start_time
+            st.write("Execution time:", round(execution_time, 2), "seconds")
+        else:
+            st.error("Please enter a question before submitting.")
+        st.session_state["submitted"] = False
 
 
 if __name__ == "__main__":

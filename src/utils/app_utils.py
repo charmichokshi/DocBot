@@ -88,12 +88,12 @@ def RAG(_config, api_key):
     return chain
 
 
-def process_user_input(_config, user_question, api_key):
-    if _config.storage == "FAISS":
+def process_user_input(_config, user_question, api_key, storage_type):
+    if storage_type == "FAISS":
         embeddings = CohereEmbeddings(cohere_api_key=api_key, model=_config.cohere_embedding_model)
         new_db = FAISS.load_local("faiss_index", embeddings, allow_dangerous_deserialization=True)
         docs = new_db.similarity_search(user_question)
-    elif _config.storage == "CHROMA":
+    elif storage_type == "Chroma":
         global chroma_vector_store
         docs = chroma_vector_store.similarity_search(user_question)
     else:
