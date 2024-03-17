@@ -78,10 +78,17 @@ def main():
         """,
         unsafe_allow_html=True
     )
-    # with st.form("formid"):
-    user_question = st.text_input(r"$\textsf{\Large Start Chatting 💬}$",
-                                  placeholder="Type your question here and hit Ask")
-    submitted = st.button("Ask ➤")
+    if pdf_docs:
+        user_question = st.text_input(r"$\textsf{\Large Start Chatting 💬}$",
+                                      placeholder="Type your question here and hit Ask",
+                                      disabled=False)
+        submitted = st.button("Ask ➤", disabled=False)
+    else:
+        user_question = st.text_input(r"$\textsf{\Large Start Chatting 💬}$",
+                                      placeholder="Type your question here and hit Ask",
+                                      disabled=True)
+        submitted = st.button("Ask ➤", disabled=True,
+                              help="Please upload PDF(s) and enter a question before submitting.")
 
     if st.session_state.get("submitted") or submitted:
         if user_question:
