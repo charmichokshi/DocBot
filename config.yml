@@ -1,6 +1,6 @@
 cohere_embedding_model: embed-english-v3.0
-chunk_size: 3000
-chunk_overlap: 300
+chunk_size: 2000
+chunk_overlap: 400
 llm_system_role:
   "
     As a chatbot, your goal is to respond to the user's question respectfully and concisely.\
