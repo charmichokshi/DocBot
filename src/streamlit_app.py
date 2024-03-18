@@ -5,7 +5,6 @@ from utils.app_utils import get_text_chunks, get_vector_store, process_user_inpu
 from utils.pdf_utils import get_pdf_text, delete_faiss_files, get_pdf_objects
 import time
 
-
 APPCFG = LoadConfig()
 cohere_api_key = st.secrets["COHERE_API_KEY"]
 
@@ -32,22 +31,22 @@ def main():
         """)
     # st.divider()
 
-
-
     with st.sidebar:
         st.title("Uploader:")
         pdf_docs = st.file_uploader("Upload PDF Files, Configure options and Click on the Submit & Process Button",
                                     accept_multiple_files=True, key="pdf_uploader")
         storage_type = st.radio("Select Storage Type", ["Chroma", "FAISS"], index=0)
         if storage_type == "FAISS":
-            use_cache = st.checkbox("Cache Embeddings with FAISS", value=False)
+            cache_or_history = st.radio("Select Advanced Features",
+                                        ["Cache Embeddings (IM)", "Conversational System",
+                                         "Hybrid Search + Cache (P)", "None"], index=3)
         else:
-            use_cache = False
+            cache_or_history = False
 
         if st.button("Submit & Process", key="process_button"):
             with st.spinner("Processing..."):
                 # FAISS CACHE
-                if storage_type == "FAISS" and use_cache:
+                if storage_type == "FAISS" and cache_or_history == "Cache Embeddings":
                     raw_docs = get_pdf_objects(pdf_docs)
                     docs_chunks = get_doc_chunks(APPCFG, raw_docs)
                     get_cached_vector_store(APPCFG, docs_chunks, cohere_api_key)
@@ -90,10 +89,19 @@ def main():
         submitted = st.button("Ask ➤", disabled=True,
                               help="Please upload PDF(s) and enter a question before submitting.")
 
+    use_history = False
+    if cache_or_history == "Conversational System":
+        use_history = True
+
+    hybrid_search = False
+    if cache_or_history == "Hybrid Search + Cache":
+        hybrid_search = True
+
     if st.session_state.get("submitted") or submitted:
         if user_question:
             start_time = time.time()
-            response = process_user_input(APPCFG, user_question, cohere_api_key, storage_type)
+            response = process_user_input(APPCFG, user_question, cohere_api_key,
+                                          storage_type, use_history, hybrid_search)
             end_time = time.time()
             st.write("DocBot ⛵: ", response)
             execution_time = end_time - start_time

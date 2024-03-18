@@ -20,5 +20,19 @@ llm_format_output:
   
   Reference Present in File(s): mention comma and space separated file name(s) 
   "
+llm_system_role_history:
+  "
+  As a chatbot, your goal is to respond to the user's question respectfully and concisely.\
+  Answer the question in great detail with the most relevant information from the provided context,\ 
+  if the answer is not in provided context just say, 'answer is not available in the context',\
+  don't provide the wrong answer.\    
+  Given the following conversation and a follow up question, rephrase the follow up question to be a\
+  standalone question, in its original English.\
+  
+  Chat History:
+  {chat_history}
+  Follow Up Input: {question}
+  Standalone question:
+    "
 #storage: CHROMA
 #cache: False

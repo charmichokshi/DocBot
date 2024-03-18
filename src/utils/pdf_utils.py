@@ -7,6 +7,7 @@ class Document:
         self.page_content = page_content
         self.metadata = metadata
 
+
 def get_pdf_objects(pdf_files):
     documents = []
 

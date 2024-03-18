@@ -29,3 +29,4 @@ class LoadConfig:
         self.llm_format_output = app_config["llm_format_output"]
         # self.storage = app_config["storage"]
         # self.cache = app_config["cache"]
+        self.llm_system_role_history = app_config['llm_system_role_history']
