@@ -6,9 +6,6 @@ Retrieval-Augmented Generation (RAG) framework can solve these issues. This chat
 Here is the app flow:
 ![Flow](https://github.com/charmichokshi/DocBot/blob/main/images/docbot%20flow.png)
 
-System Overview:
-![System](https://github.com/charmichokshi/DocBot/blob/main/images/system%20overview.png)
-
 ### Technical Overview
 - **PDF Processing:** Utilizes PyPDF2 for extracting text from PDF documents.
 - **Text Chunking:** Employs the RecursiveCharacterTextSplitter from LangChain for dividing the extracted text into manageable chunks.
@@ -16,6 +13,9 @@ System Overview:
 - **Vector Store Creation:** Uses FAISS (or Chroma) for creating a searchable vector store from text chunks.
 - **Answer Generation:** Leverages ChatCohere from Cohere for generating answers to user queries using the context provided by the uploaded documents.
 - **Deployment:** The web app has been deployed on Streamlit.
+
+System Overview:
+![System](https://github.com/charmichokshi/DocBot/blob/main/images/system%20overview.png)
 
 **Advanced RAG Concepts Implemented**
 - **Caching Embeddings:** Embeddings can be stored or temporarily cached to avoid needing to recompute them using `CacheBackedEmbeddings`
