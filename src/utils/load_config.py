@@ -1,6 +1,7 @@
 import yaml
 from pyprojroot import here
 
+
 class LoadConfig:
     """
     A class for loading configuration settings, including Cohere API key.
