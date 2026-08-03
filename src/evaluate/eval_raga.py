@@ -1,8 +1,7 @@
 import warnings
 warnings.filterwarnings('ignore')
-from langchain.embeddings import CohereEmbeddings
-from langchain.chat_models import ChatCohere
-from langchain.vectorstores.chroma import Chroma
+from langchain_cohere import CohereEmbeddings, ChatCohere
+from langchain_community.vectorstores import Chroma
 from langchain_core.runnables import (
     RunnableParallel,
     RunnablePassthrough

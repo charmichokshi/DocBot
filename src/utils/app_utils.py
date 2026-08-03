@@ -1,11 +1,10 @@
-from langchain.text_splitter import RecursiveCharacterTextSplitter
-from langchain.vectorstores import FAISS
+from langchain_text_splitters import RecursiveCharacterTextSplitter
+from langchain_community.vectorstores import FAISS
 from langchain.chains.question_answering import load_qa_chain
-from langchain.prompts import PromptTemplate
-from langchain.embeddings import CohereEmbeddings, CacheBackedEmbeddings
-from langchain.chat_models import ChatCohere
-from langchain.cache import InMemoryCache
-from langchain.vectorstores.chroma import Chroma
+from langchain_core.prompts import PromptTemplate
+from langchain_cohere import CohereEmbeddings, ChatCohere
+from langchain.embeddings import CacheBackedEmbeddings
+from langchain_community.vectorstores import Chroma
 from langchain.memory import ConversationBufferMemory
 from langchain.chains import LLMChain
 from langchain.chains.qa_with_sources import load_qa_with_sources_chain
@@ -14,9 +13,12 @@ from typing import Dict, List, Optional, Tuple
 
 from .hybrid_app_utils import process_user_input_cache_hybrid
 
-__import__('pysqlite3')
-import sys
-sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+try:
+    __import__('pysqlite3')
+    import sys
+    sys.modules['sqlite3'] = sys.modules.pop('pysqlite3')
+except ImportError:
+    pass
 
 
 chroma_vector_store = None
@@ -133,15 +135,13 @@ def process_user_input(_config, user_question, api_key, storage_type, use_histor
             return ""
 
         if use_history:
-            response = chain({"question": user_question},
-                             return_only_outputs=False)
+            response = chain.invoke({"question": user_question})
             try:
                 return response["answer"].split('SOURCES')[0].strip()
             except:
                 return response["answer"]
         else:
-            response = chain({"input_documents": docs,
-                              "question": user_question},
-                             return_only_outputs=True)
+            response = chain.invoke({"input_documents": docs,
+                              "question": user_question})
             # "question": user_question+_config.llm_format_output},
             return response["output_text"]

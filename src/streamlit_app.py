@@ -67,16 +67,16 @@ def main():
                     st.success("Done!!")
                     # st.write('Using Chroma DB...')
 
-    st.markdown(
-        """
-        <style>
-        .stTextInput > div:last-child {
-            display: none !important;
-        }
-        </style>
-        """,
-        unsafe_allow_html=True
-    )
+    # st.markdown(
+    #     """
+    #     <style>
+    #     .stTextInput > div:last-child {
+    #         display: none !important;
+    #     }
+    #     </style>
+    #     """,
+    #     unsafe_allow_html=True
+    # )
     if pdf_docs:
         user_question = st.text_input(r"$\textsf{\Large Start Chatting 💬}$",
                                       placeholder="Type your question here and hit Ask",

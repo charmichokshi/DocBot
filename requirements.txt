@@ -1,9 +1,10 @@
 streamlit
 langchain
-PyPDF2
+langchain-community
+langchain-cohere
+pypdf
 faiss-cpu
 cohere
 python-dotenv
 pyprojroot
 chromadb
-pysqlite3-binary
