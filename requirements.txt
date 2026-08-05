@@ -8,3 +8,6 @@ cohere
 python-dotenv
 pyprojroot
 chromadb
+ragas
+rank_bm25
+tabulate
